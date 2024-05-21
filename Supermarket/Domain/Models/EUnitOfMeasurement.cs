@@ -2,6 +2,9 @@
 
 namespace Supermarket.Domain.Models
 {
+    /// <summary>
+    /// Enum para possíveis unidades de medida de um produto
+    /// </summary>
     public enum EUnitOfMeasurement : byte
     {
         [Description("UN")]

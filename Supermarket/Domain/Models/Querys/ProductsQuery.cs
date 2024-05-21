@@ -1,6 +1,6 @@
 ﻿namespace Supermarket.Domain.Models.Querys
 {
-    public class ProductsQuery
+    public class ProductsQuery : Query
     {
         public int? CategoryId { get; set; }
 

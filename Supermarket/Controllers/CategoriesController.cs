@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Supermarket.Domain.Models;
 using Supermarket.Domain.Services;
@@ -7,8 +8,8 @@ using Supermarket.Resources;
 
 namespace Supermarket.Controllers
 {
-    [Route("/api/[controller]")]
-    public class CategoriesController : Controller
+
+    public class CategoriesController : BaseApiController
     {
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
@@ -32,50 +33,39 @@ namespace Supermarket.Controllers
         #endregion
 
         #region POST
-        // POST: Categories
         [HttpPost]
         [ProducesResponseType(typeof(CategoryResource), 201)]
         [ProducesResponseType(typeof(ErrorResource), 400)]
         public async Task<IActionResult> PostAsync([FromBody] SaveCategoryResource resource)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.GetErrorMessage);
-            }
-
-            var category = _mapper.Map<SaveCategoryResource, Category>(resource);
+            var category = _mapper.Map<Category>(resource);
             var result = await _categoryService.SaveAsync(category);
 
-            if(!result.Success)
+            if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(new ErrorResource(result.Message!));
             }
 
-            var categoryResource = _mapper.Map<Category,  CategoryResource>(result.Category);
+            var categoryResource = _mapper.Map<CategoryResource>(result.Resource!);
             return Ok(categoryResource);
         }
         #endregion
 
         #region PUT
-        // PUT: Categories
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(CategoryResource), 200)]
+        [ProducesResponseType(typeof(ErrorResource), 400)]
         public async Task<IActionResult> PutAsync(int id, [FromBody] SaveCategoryResource resource) 
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState.GetErrorMessage);
-            }
-
-            var category = _mapper.Map<SaveCategoryResource, Category>(resource);
+            var category = _mapper.Map<Category>(resource);
             var result = await _categoryService.UpdateAsync(id, category);
-            
-            if(!result.Success)
+
+            if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(new ErrorResource(result.Message));
             }
 
-            var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
+            var categoryResource = _mapper.Map<CategoryResource>(result.Resource!);
 
             return Ok(categoryResource);
         }
@@ -83,16 +73,18 @@ namespace Supermarket.Controllers
 
         #region DELETE
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(CategoryResource), 200)]
+        [ProducesResponseType(typeof(ErrorResource), 400)]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             var result = await _categoryService.DeleteAsync(id);
 
             if(!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(new ErrorResource(result.Message!));
             }
 
-            var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
+            var categoryResource = _mapper.Map<CategoryResource>(result.Resource!);
 
             return Ok(categoryResource);
         }

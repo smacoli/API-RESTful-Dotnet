@@ -259,3 +259,4 @@ C:\Users\soliveira\Desktop\EstudoAPI\Supermarket\Supermarket\obj\Debug\net7.0\Su
 C:\Users\soliveira\Desktop\EstudoAPI\Supermarket\Supermarket\obj\Debug\net7.0\ref\Supermarket.dll
 C:\Users\soliveira\Desktop\EstudoAPI\Supermarket\Supermarket\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\soliveira\Desktop\EstudoAPI\Supermarket\Supermarket\bin\Debug\net7.0\AutoMapper.dll
+C:\Users\soliveira\Desktop\EstudoAPI\Supermarket\Supermarket\obj\Debug\net7.0\Supermarket.sourcelink.json

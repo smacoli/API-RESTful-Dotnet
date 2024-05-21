@@ -1,14 +1,10 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Supermarket.Data;
+using Microsoft.OpenApi.Writers;
 using Supermarket.Domain.Repositories;
 using Supermarket.Domain.Services;
 using Supermarket.Persistence.Contexts;
 using Supermarket.Persistence.Repositories;
 using Supermarket.Service;
-using System.Reflection;
 
 namespace Supermarket
 {
@@ -18,37 +14,37 @@ namespace Supermarket
         {
 
             var builder = WebApplication.CreateBuilder(args);
-            /*
-            var host = BuildWebHost(args);
 
-            using (var scope = host.Services.CreateScope())
-            using (var context = scope.ServiceProvider.GetService<AppDbContext>())
-            {
-                context.Database.EnsureCreated();
-            }
-
-            host.Run();
-            */
-
-            // Add services to the container.
-            builder.Services.AddAutoMapper(typeof(Program));
- 
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseInMemoryDatabase("SupermarketDb"));
-            
+                options.UseInMemoryDatabase("SupermarketDb"));
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
-
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+
+            builder.Services.AddAutoMapper(typeof(Program));
+
+            // Add services to the container.       
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddMemoryCache();
+
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<AppDbContext>();
+
+                dbContext.Database.EnsureCreated();
+            }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -60,7 +56,6 @@ namespace Supermarket
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

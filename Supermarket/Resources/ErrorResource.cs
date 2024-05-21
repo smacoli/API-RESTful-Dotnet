@@ -7,12 +7,12 @@
 
         public ErrorResource(List<string> messages)
         {
-            Messages = messages;
+            Messages = messages ?? [];
         }
 
         public ErrorResource(string message)
         {
-            Messages.Add(message);
+            Messages = [];
 
             if (!string.IsNullOrWhiteSpace(message))
             {
